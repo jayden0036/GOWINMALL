@@ -1,154 +1,185 @@
-"use client";
+import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
+import { createClient } from "@/lib/supabase/server";
+import { MfaPanel, SignOutButton } from "./mfa-panel";
 
-import { useState } from "react";
+export const dynamic = "force-dynamic";
 
-export default function AdminPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+type Row = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  post_name: string;
+  phone: string;
+  city: string;
+  account_type: string;
+  created_at: string;
+};
 
-  function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
+const roleLabels: Record<string, string> = {
+  owner: "Propriétaire",
+  admin: "Administrateur",
+  moderator: "Modérateur",
+};
 
-    setMessage(
-      "L'authentification administrateur doit encore être configurée."
-    );
-  }
-
+function Shell({ children }: { children: ReactNode }) {
   return (
     <main
       style={{
         minHeight: "100vh",
         background: "#101b17",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
+        padding: "24px 16px",
         fontFamily: "Arial, sans-serif",
+        boxSizing: "border-box",
       }}
     >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "430px",
-          background: "#ffffff",
-          borderRadius: "18px",
-          padding: "35px 25px",
-          boxSizing: "border-box",
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <h1 style={{ color: "#087443", marginBottom: "5px" }}>
-            GOWINMALL
-          </h1>
-
-          <p style={{ color: "#b18a35", fontWeight: "bold" }}>
-            GOWIN ADMIN
-          </p>
-
-          <h2 style={{ color: "#172d22", marginTop: "30px" }}>
-            Espace propriétaire
-          </h2>
-
-          <p style={{ color: "#718078", fontSize: "14px" }}>
-            Accès réservé à l'administration de GOWINMALL.
-          </p>
-        </div>
-
-        <form onSubmit={handleLogin}>
-          <label
-            style={{
-              display: "block",
-              marginTop: "25px",
-              fontWeight: "bold",
-            }}
-          >
-            Adresse e-mail administrateur
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Votre adresse e-mail"
-              required
-              autoComplete="username"
-              style={inputStyle}
-            />
-          </label>
-
-          <label
-            style={{
-              display: "block",
-              marginTop: "20px",
-              fontWeight: "bold",
-            }}
-          >
-            Mot de passe
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Votre mot de passe"
-              required
-              autoComplete="current-password"
-              style={inputStyle}
-            />
-          </label>
-
-          <button
-            type="submit"
-            style={{
-              width: "100%",
-              padding: "16px",
-              marginTop: "25px",
-              background: "#087443",
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              fontSize: "16px",
-              fontWeight: "bold",
-            }}
-          >
-            Accéder à GOWIN ADMIN
-          </button>
-
-          {message && (
-            <p
-              role="status"
-              style={{
-                marginTop: "18px",
-                padding: "12px",
-                background: "#fff4df",
-                borderRadius: "8px",
-                fontSize: "13px",
-              }}
-            >
-              {message}
-            </p>
-          )}
-        </form>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "#8a958e",
-            fontSize: "12px",
-            marginTop: "30px",
-          }}
-        >
-          GOWINMALL © 2026 — Accès sécurisé
-        </p>
-      </div>
+      <div style={{ maxWidth: "900px", margin: "auto" }}>{children}</div>
     </main>
   );
 }
 
-const inputStyle: React.CSSProperties = {
-  display: "block",
-  width: "100%",
-  padding: "14px",
-  marginTop: "8px",
-  border: "1px solid #dce4df",
-  borderRadius: "9px",
-  boxSizing: "border-box",
-  fontSize: "15px",
+const cardStyle: React.CSSProperties = {
+  background: "white",
+  borderRadius: "14px",
+  padding: "20px",
+  flex: "1 1 200px",
 };
+
+export default async function AdminPage() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: role } = await supabase.rpc("my_admin_role");
+  if (!role) redirect("/");
+
+  const { data: aal } =
+    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+  if (aal?.currentLevel !== "aal2") {
+    return (
+      <Shell>
+        <MfaPanel mode={aal?.nextLevel === "aal2" ? "verify" : "enroll"} />
+      </Shell>
+    );
+  }
+
+  // Affichage seulement : la vraie protection des données est dans la base (RLS).
+  const canViewUsers = role === "owner" || role === "admin";
+
+  const { count: usersCount } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true });
+
+  const { count: pendingDocs } = await supabase
+    .from("identity_documents")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "pending");
+
+  let recent: Row[] = [];
+  if (canViewUsers) {
+    const { data } = await supabase
+      .from("profiles")
+      .select(
+        "id, first_name, last_name, post_name, phone, city, account_type, created_at"
+      )
+      .order("created_at", { ascending: false })
+      .limit(20);
+    recent = (data ?? []) as Row[];
+
+    await supabase.rpc("log_admin_action", {
+      p_action: "consultation_liste_utilisateurs",
+    });
+  }
+
+  return (
+    <Shell>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "12px",
+          flexWrap: "wrap",
+          color: "white",
+          marginBottom: "22px",
+        }}
+      >
+        <div>
+          <div style={{ fontSize: "22px", fontWeight: 800 }}>
+            GOWIN <span style={{ color: "#f5a623" }}>ADMIN</span>
+          </div>
+          <div style={{ fontSize: "13px", color: "#9db3a8" }}>
+            {roleLabels[role as string] ?? role} · {user.email}
+          </div>
+        </div>
+        <SignOutButton />
+      </div>
+
+      <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+        <div style={cardStyle}>
+          <div style={{ fontSize: "13px", color: "#718078" }}>Inscrits</div>
+          <div style={{ fontSize: "32px", fontWeight: 800, color: "#087443" }}>
+            {canViewUsers ? usersCount ?? 0 : "—"}
+          </div>
+        </div>
+        <div style={cardStyle}>
+          <div style={{ fontSize: "13px", color: "#718078" }}>
+            Documents d&apos;identité en attente
+          </div>
+          <div style={{ fontSize: "32px", fontWeight: 800, color: "#b18a35" }}>
+            {pendingDocs ?? 0}
+          </div>
+        </div>
+      </div>
+
+      {canViewUsers && (
+        <div style={{ ...cardStyle, marginTop: "14px" }}>
+          <h3 style={{ marginTop: 0, color: "#172d22" }}>
+            Dernières inscriptions
+          </h3>
+          <div style={{ overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: "14px",
+                minWidth: "560px",
+              }}
+            >
+              <thead>
+                <tr style={{ textAlign: "left", color: "#718078" }}>
+                  <th style={{ padding: "8px" }}>Nom</th>
+                  <th style={{ padding: "8px" }}>Téléphone</th>
+                  <th style={{ padding: "8px" }}>Ville</th>
+                  <th style={{ padding: "8px" }}>Type</th>
+                  <th style={{ padding: "8px" }}>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recent.map((p) => (
+                  <tr key={p.id} style={{ borderTop: "1px solid #e5ebe7" }}>
+                    <td style={{ padding: "8px" }}>
+                      {[p.first_name, p.post_name, p.last_name]
+                        .filter(Boolean)
+                        .join(" ")}
+                    </td>
+                    <td style={{ padding: "8px" }}>{p.phone}</td>
+                    <td style={{ padding: "8px" }}>{p.city}</td>
+                    <td style={{ padding: "8px" }}>{p.account_type}</td>
+                    <td style={{ padding: "8px" }}>
+                      {new Date(p.created_at).toLocaleDateString("fr-FR")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </Shell>
+  );
+            }
