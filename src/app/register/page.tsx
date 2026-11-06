@@ -1,5 +1,5 @@
 "use client";
-
+import { getSiteUrl } from "@/lib/site-url";
 import { useState } from "react"; 
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -11,7 +11,7 @@ export default function RegisterPage() {
     firstName: "",
     lastName: "",
     postName: "",
-    email: "",
+    emailRedirectTo: `${getSiteUrl()}/auth/callback`,
     phone: "",
     country: "République démocratique du Congo",
     city: "",
