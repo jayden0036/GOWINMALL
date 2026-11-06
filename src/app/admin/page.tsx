@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { MfaPanel, SignOutButton } from "./mfa-panel";
-
+import { DocumentsPanel } from "./documents-panel";
 export const dynamic = "force-dynamic";
 
 type Row = {
@@ -69,7 +69,7 @@ export default async function AdminPage() {
 
   // Affichage seulement : la vraie protection des données est dans la base (RLS).
   const canViewUsers = role === "owner" || role === "admin";
-
+            
   const { count: usersCount } = await supabase
     .from("profiles")
     .select("*", { count: "exact", head: true });
@@ -136,7 +136,7 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {canViewUsers && (
+            <DocumentsPanel />{canViewUsers && (
         <div style={{ ...cardStyle, marginTop: "14px" }}>
           <h3 style={{ marginTop: 0, color: "#172d22" }}>
             Dernières inscriptions
