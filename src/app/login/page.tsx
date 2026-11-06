@@ -33,7 +33,7 @@ export default function LoginPage() {
     }
 
     const { data: role } = await supabase.rpc("my_admin_role");
-    router.push(role ? "/admin" : "/");
+        router.push(role ? "/admin" : "/verification");
     router.refresh();
   }
 
