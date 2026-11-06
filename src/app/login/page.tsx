@@ -1,16 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-
+const callbackMessages: Record<string, string> = {
+  link_expired: "Ce lien a expiré ou a déjà été utilisé. Si votre adresse est confirmée, connectez-vous ci-dessous.",
+  session_exchange_failed: "Le lien a été ouvert sur un autre navigateur ou appareil. Si votre adresse est confirmée, connectez-vous ci-dessous.",
+  not_confirmed: "Votre adresse e-mail n'est pas encore confirmée.",
+  confirmation_failed: "La confirmation n'a pas pu être validée. Réessayez avec le lien reçu par e-mail.",
+  missing_code: "Lien de confirmation incomplet.",
+};
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
+useEffect(() => {
+  const reason = new URLSearchParams(window.location.search).get("error");
+  if (reason) setMessage(callbackMessages[reason] ?? callbackMessages.confirmation_failed);
+}, []);
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setMessage("");
