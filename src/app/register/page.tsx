@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { createClient } from "@/lib/supabase/client";
 export default function RegisterPage() {
   const [message, setMessage] = useState("");
 
@@ -36,7 +36,7 @@ export default function RegisterPage() {
     });
   }
 
-  function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
@@ -54,10 +54,37 @@ export default function RegisterPage() {
       return;
     }
 
+    setMessage("Création du compte…");
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/login`,
+        data: {
+          first_name: form.firstName,
+          last_name: form.lastName,
+          post_name: form.postName,
+          phone: form.phone,
+          country: form.country,
+          city: form.city,
+          gender: form.gender,
+          account_type: form.accountType,
+          accepted_terms: form.acceptedTerms,
+        },
+      },
+    });
+
+    if (error) {
+      setMessage("Impossible de créer le compte : " + error.message);
+      return;
+    }
+
     setMessage(
-      "Le formulaire est prêt. La connexion sécurisée à la base de données reste à effectuer."
+      "Compte créé. Vérifiez votre boîte e-mail pour confirmer votre adresse, puis connectez-vous."
     );
-  }
+      }
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
