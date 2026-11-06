@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState } from "react"; 
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-export default function RegisterPage() {
+export default function RegisterPage() { 
+    const router = useRouter();
   const [message, setMessage] = useState("");
 
   const [form, setForm] = useState({
@@ -34,9 +36,7 @@ export default function RegisterPage() {
           ? target.checked
           : target.value,
     });
-  }
-
-    async function handleSubmit(e: React.FormEvent) {
+  }   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
@@ -84,7 +84,7 @@ export default function RegisterPage() {
     setMessage(
       "Compte créé. Vérifiez votre boîte e-mail pour confirmer votre adresse, puis connectez-vous."
     );
-      }
+    }
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
