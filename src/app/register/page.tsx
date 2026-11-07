@@ -1,17 +1,19 @@
 "use client";
-import { getSiteUrl } from "@/lib/site-url";
-import { useState } from "react"; 
+
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-export default function RegisterPage() { 
-    const router = useRouter();
+import { getSiteUrl } from "@/lib/site-url";
+
+export default function RegisterPage() {
+  const router = useRouter();
   const [message, setMessage] = useState("");
 
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     postName: "",
-    emailRedirectTo: `${getSiteUrl()}/auth/callback`,
+    email: "",
     phone: "",
     country: "République démocratique du Congo",
     city: "",
@@ -23,9 +25,7 @@ export default function RegisterPage() {
   });
 
   function updateField(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     const target = e.target;
 
@@ -36,7 +36,9 @@ export default function RegisterPage() {
           ? target.checked
           : target.value,
     });
-  }   async function handleSubmit(e: React.FormEvent) {
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
@@ -61,7 +63,7 @@ export default function RegisterPage() {
       email: form.email,
       password: form.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/login`,
+        emailRedirectTo: `${getSiteUrl()}/auth/callback`,
         data: {
           first_name: form.firstName,
           last_name: form.lastName,
@@ -84,7 +86,7 @@ export default function RegisterPage() {
     setMessage(
       "Compte créé. Vérifiez votre boîte e-mail pour confirmer votre adresse, puis connectez-vous."
     );
-    }
+  }
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
@@ -122,9 +124,7 @@ export default function RegisterPage() {
           boxShadow: "0 8px 35px #0000000d",
         }}
       >
-        <h1 style={{ color: "#087443", textAlign: "center" }}>
-          GOWINMALL
-        </h1>
+        <h1 style={{ color: "#087443", textAlign: "center" }}>GOWINMALL</h1>
 
         <h2 style={{ textAlign: "center", color: "#172d22" }}>
           Créer votre compte
@@ -288,9 +288,9 @@ export default function RegisterPage() {
           >
             <strong>Vérification d'identité</strong>
             <p style={{ fontSize: "14px", lineHeight: 1.6 }}>
-              Après votre inscription, vous pourrez accéder à
-              une procédure sécurisée de vérification avec une
-              pièce d'identité acceptée par GOWINMALL.
+              Après votre inscription, vous pourrez accéder à une procédure
+              sécurisée de vérification avec une pièce d'identité acceptée par
+              GOWINMALL.
             </p>
           </div>
 
@@ -308,8 +308,8 @@ export default function RegisterPage() {
               checked={form.acceptedTerms}
               onChange={updateField}
             />
-            J'accepte les conditions d'utilisation et la
-            politique de confidentialité.
+            J'accepte les conditions d'utilisation et la politique de
+            confidentialité.
           </label>
 
           {message && (
@@ -357,4 +357,4 @@ export default function RegisterPage() {
       </div>
     </main>
   );
-    }
+}
