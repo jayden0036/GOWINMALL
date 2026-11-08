@@ -117,7 +117,11 @@ export default function Home() {
           <a href="/" className="logo">
             GOWIN<span>MALL</span>
           </a>
-          <p>© 2026 GOWINMALL. Tous droits réservés.</p>
+          <p>
+  © 2026 GOWINMALL. Tous droits réservés. ·{" "}
+  <a href="/conditions" style={{ color: "inherit" }}>Conditions</a> ·{" "}
+  <a href="/confidentialite" style={{ color: "inherit" }}>Confidentialité</a>
+</p>
           <span>Made for Africa 🌍</span>
         </div>
       </footer>
