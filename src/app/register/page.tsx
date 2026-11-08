@@ -354,7 +354,7 @@ export default function RegisterPage() {
             fontSize: "13px",
             color: "#68766e",
             marginTop: "22px",
-          }}.   
+          }}   
         >
                   Déjà membre ?{" "}
           <a href="/login" style={{ color: "#087443", fontWeight: 600 }}>
