@@ -308,8 +308,12 @@ export default function RegisterPage() {
               checked={form.acceptedTerms}
               onChange={updateField}
             />
-            J'accepte les conditions d'utilisation et la politique de
-            confidentialité.
+                        <span>
+              J'accepte les{" "}
+              <a href="/conditions" target="_blank" rel="noopener noreferrer" style={{ color: "#087443" }}>conditions d'utilisation</a>{" "}
+              et la{" "}
+              <a href="/confidentialite" target="_blank" rel="noopener noreferrer" style={{ color: "#087443" }}>politique de confidentialité</a>.
+            </span>
           </label>
 
           {message && (
