@@ -107,7 +107,9 @@ useEffect(() => {
               style={inputStyle}
             />
           </label>
-
+          <p style={{ textAlign: "right", fontSize: "14px", marginTop: "10px" }}>
+            <a href="/mot-de-passe-oublie" style={{ color: "#087443" }}>Mot de passe oublié ?</a>
+          </p>
           {message && (
             <p
               role="status"
