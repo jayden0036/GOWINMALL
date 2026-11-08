@@ -94,7 +94,7 @@ export default function Home() {
               <div className="category-icon">{category.icon}</div>
               <h3>{category.name}</h3>
               <p>{category.description}</p>
-              <span className="category-arrow">Explorer →</span>
+              <span className="category-arrow">Bientôt disponible</span>
             </article>
           ))}
         </div>
