@@ -355,8 +355,10 @@ export default function RegisterPage() {
             color: "#68766e",
             marginTop: "22px",
           }}
-        >
-          Déjà membre ? Connectez-vous.
+                  Déjà membre ?{" "}
+          <a href="/login" style={{ color: "#087443", fontWeight: 600 }}>
+            Connectez-vous
+          </a>
         </p>
       </div>
     </main>
