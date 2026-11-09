@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getSiteUrl } from "@/lib/site-url";
-
+import GoogleButton from "@/components/GoogleButton";
 export default function RegisterPage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
@@ -347,7 +347,7 @@ export default function RegisterPage() {
             Créer mon compte →
           </button>
         </form>
-
+        <GoogleButton label="S'inscrire avec Google" />
         <p
           style={{
             textAlign: "center",
