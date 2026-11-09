@@ -51,10 +51,18 @@ export async function GET(request: NextRequest) {
     return fail("not_confirmed");
   }
 
+  if (searchParams.get("terms") === "1") {
+    await supabase
+      .from("profiles")
+      .update({ accepted_terms_at: new Date().toISOString() })
+      .eq("id", user.id)
+      .is("accepted_terms_at", null);
+  }
+
   let destination = safeNext(searchParams.get("next"));
   if (!destination) {
     const { data: role } = await supabase.rpc("my_admin_role");
     destination = role ? "/admin" : "/verification";
   }
   return NextResponse.redirect(`${base}${destination}`);
-}
+      }
