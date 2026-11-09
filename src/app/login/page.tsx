@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import GoogleButton from "@/components/GoogleButton";
 const callbackMessages: Record<string, string> = {
   link_expired: "Ce lien a expiré ou a déjà été utilisé. Si votre adresse est confirmée, connectez-vous ci-dessous.",
   session_exchange_failed: "Le lien a été ouvert sur un autre navigateur ou appareil. Si votre adresse est confirmée, connectez-vous ci-dessous.",
@@ -144,7 +145,7 @@ useEffect(() => {
             {loading ? "Connexion…" : "Se connecter"}
           </button>
         </form>
-
+        <GoogleButton label="Continuer avec Google" />
         <p style={{ textAlign: "center", fontSize: "14px", marginTop: "22px" }}>
           Pas encore de compte ?{" "}
           <a href="/register" style={{ color: "#087443", fontWeight: 600 }}>
