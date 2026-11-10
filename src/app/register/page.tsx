@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getSiteUrl } from "@/lib/site-url";
 import GoogleButton from "@/components/GoogleButton";
+
 export default function RegisterPage() {
-  const router = useRouter();
   const [message, setMessage] = useState("");
 
   const [form, setForm] = useState({
@@ -131,8 +130,10 @@ export default function RegisterPage() {
         </h2>
 
         <p style={{ textAlign: "center", color: "#68766e" }}>
-          Rejoignez les opportunités de toute l'Afrique.
+          Rejoignez les opportunités de toute l&apos;Afrique.
         </p>
+
+        <GoogleButton label="S'inscrire avec Google" position="top" />
 
         <form onSubmit={handleSubmit}>
           <label style={labelStyle}>
@@ -286,10 +287,10 @@ export default function RegisterPage() {
               marginBottom: "20px",
             }}
           >
-            <strong>Vérification d'identité</strong>
+            <strong>Vérification d&apos;identité</strong>
             <p style={{ fontSize: "14px", lineHeight: 1.6 }}>
               Après votre inscription, vous pourrez accéder à une procédure
-              sécurisée de vérification avec une pièce d'identité acceptée par
+              sécurisée de vérification avec une pièce d&apos;identité acceptée par
               GOWINMALL.
             </p>
           </div>
@@ -308,60 +309,27 @@ export default function RegisterPage() {
               checked={form.acceptedTerms}
               onChange={updateField}
             />
-                        <span>
-              J'accepte les{" "}
-              <a href="/conditions" target="_blank" rel="noopener noreferrer" style={{ color: "#087443" }}>conditions d'utilisation</a>{" "}
+            <span>
+              J&apos;accepte les{" "}
+              <a
+                href="/conditions"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#087443" }}
+              >
+                conditions d&apos;utilisation
+              </a>{" "}
               et la{" "}
-              <a href="/confidentialite" target="_blank" rel="noopener noreferrer" style={{ color: "#087443" }}>politique de confidentialité</a>.
+              <a
+                href="/confidentialite"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#087443" }}
+              >
+                politique de confidentialité
+              </a>
+              .
             </span>
           </label>
 
           {message && (
-            <p
-              role="status"
-              style={{
-                background: "#fff4df",
-                padding: "12px",
-                borderRadius: "8px",
-                fontSize: "14px",
-              }}
-            >
-              {message}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            style={{
-              width: "100%",
-              padding: "16px",
-              background: "#087443",
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              fontWeight: "bold",
-              fontSize: "16px",
-              cursor: "pointer",
-            }}
-          >
-            Créer mon compte →
-          </button>
-        </form>
-        <GoogleButton label="S'inscrire avec Google" />
-        <p
-          style={{
-            textAlign: "center",
-            fontSize: "13px",
-            color: "#68766e",
-            marginTop: "22px",
-          }}   
-        >
-                  Déjà membre ?{" "}
-          <a href="/login" style={{ color: "#087443", fontWeight: 600 }}>
-            Connectez-vous
-          </a>
-        </p>
-      </div>
-    </main>
-  );
-}
