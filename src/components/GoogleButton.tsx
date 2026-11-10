@@ -6,8 +6,10 @@ import { getSiteUrl } from "@/lib/site-url";
 
 export default function GoogleButton({
   label = "Continuer avec Google",
+  position = "bottom",
 }: {
   label?: string;
+  position?: "top" | "bottom";
 }) {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,10 +31,18 @@ export default function GoogleButton({
   }
 
   return (
-    <div style={{ marginTop: "22px" }}>
-      <p style={{ textAlign: "center", color: "#68766e", fontSize: "13px", margin: "0 0 14px" }}>
-        ou
-      </p>
+    <div style={{ marginTop: position === "bottom" ? "22px" : "8px" }}>
+      {position === "bottom" && (
+        <p style={{ textAlign: "center", color: "#68766e", fontSize: "13px", margin: "0 0 14px" }}>
+          ou
+        </p>
+      )}
+
+      {position === "top" && (
+        <p style={{ textAlign: "center", color: "#087443", fontSize: "13px", fontWeight: 600, margin: "0 0 10px" }}>
+          Recommandé : inscription en un clic, sans e-mail à confirmer.
+        </p>
+      )}
 
       <button
         type="button"
@@ -71,6 +81,12 @@ export default function GoogleButton({
         </a>
         .
       </p>
+
+      {position === "top" && (
+        <p style={{ textAlign: "center", color: "#68766e", fontSize: "13px", margin: "22px 0" }}>
+          ou inscrivez-vous avec votre e-mail
+        </p>
+      )}
     </div>
   );
 }
