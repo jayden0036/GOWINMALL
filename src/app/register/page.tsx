@@ -332,4 +332,52 @@ export default function RegisterPage() {
             </span>
           </label>
 
-          {message && (
+          {message && (             <p
+              role="status"
+              style={{
+                background: "#fff4df",
+                padding: "12px",
+                borderRadius: "8px",
+                fontSize: "14px",
+              }}
+            >
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            style={{
+              width: "100%",
+              padding: "16px",
+              background: "#087443",
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              fontWeight: "bold",
+              fontSize: "16px",
+              cursor: "pointer",
+            }}
+          >
+            Créer mon compte →
+          </button>
+        </form>
+
+        <p
+          style={{
+            textAlign: "center",
+            fontSize: "13px",
+            color: "#68766e",
+            marginTop: "22px",
+          }}
+        >
+          Déjà membre ?{" "}
+          <a href="/login" style={{ color: "#087443", fontWeight: 600 }}>
+            Connectez-vous
+          </a>
+        </p>
+      </div>
+    </main>
+  );
+}
+        
