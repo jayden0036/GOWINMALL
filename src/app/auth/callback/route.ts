@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
   let destination = safeNext(searchParams.get("next"));
   if (!destination) {
     const { data: role } = await supabase.rpc("my_admin_role");
-    destination = role ? "/admin" : "/verification";
+        destination = role ? "/admin" : "/dashboard";
   }
   return NextResponse.redirect(`${base}${destination}`);
       }
