@@ -42,7 +42,7 @@ export default function NewPasswordPage() {
     }
 
     const { data: role } = await supabase.rpc("my_admin_role");
-    router.push(role ? "/admin" : "/verification");
+        router.push(role ? "/admin" : "/dashboard");
     router.refresh();
   }
 
