@@ -101,7 +101,7 @@ export default async function DashboardPage() {
       title: "Conditions acceptées",
       state: termsAccepted ? "done" : "todo",
       text: termsAccepted
-        ? `Acceptées le ${formatDate(profile.accepted_terms_at)}.`
+                ? `Acceptées le ${formatDate(profile?.accepted_terms_at)}.`
         : "L'acceptation n'est pas enregistrée pour ce compte.",
     },
     { title: "Identité vérifiée", state: identityState, text: identityText },
