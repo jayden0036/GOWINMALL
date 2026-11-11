@@ -118,7 +118,12 @@ export default async function AdminPage() {
         </div>
         <SignOutButton />
       </div>
-
+      <a
+        href="/admin/statistiques"
+        style={{ display: "inline-block", marginBottom: "14px", color: "#f5a623", fontWeight: 700, textDecoration: "none" }}
+      >
+        Voir les statistiques →
+      </a>
       <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
         <div style={cardStyle}>
           <div style={{ fontSize: "13px", color: "#718078" }}>Inscrits</div>
