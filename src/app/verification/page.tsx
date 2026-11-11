@@ -151,7 +151,12 @@ export default function VerificationPage() {
           boxShadow: "0 8px 35px #0000000d",
           boxSizing: "border-box",
         }}
-      >
+      >        <a
+          href="/dashboard"
+          style={{ color: "#087443", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}
+        >
+          ← Mon tableau de bord
+        </a>
         <h1 style={{ color: "#087443", textAlign: "center", margin: 0 }}>
           GOWINMALL
         </h1>
