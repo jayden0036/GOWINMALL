@@ -31,7 +31,13 @@ export default function ConditionsPage() {
         <h2>7. Modification des conditions</h2>
         <p>Ces conditions peuvent évoluer. La date de mise à jour figure en haut de cette page.</p>
 
-        <h2>8. Contact</h2>
+                <h2>8. Paiements, commissions et reversements</h2>
+        <p>Les achats sont payés à GOWINMALL, et non directement au vendeur, par l&apos;un des moyens de paiement indiqués sur la page de la commande. Le paiement est vérifié par l&apos;équipe GOWINMALL avant la livraison ou l&apos;accès au produit ; un délai de vérification est possible.</p>
+        <p>GOWINMALL prélève sur chaque vente une commission dont le taux dépend du type d&apos;offre. Les taux en vigueur sont affichés sur la page « Comment ça marche » et sur le formulaire de création d&apos;une offre. Le taux appliqué à une commande est celui en vigueur au moment de la commande. Les frais éventuels de l&apos;opérateur de paiement mobile ne sont pas inclus.</p>
+        <p>GOWINMALL reverse au vendeur le prix de vente moins la commission, sur les coordonnées de reversement qu&apos;il a indiquées : pour un produit digital, après la confirmation du paiement ; pour un produit physique ou un service, après la confirmation de réception par l&apos;acheteur. Le vendeur est responsable de l&apos;exactitude de ses coordonnées.</p>
+        <p>Une commande peut être annulée par l&apos;acheteur tant qu&apos;il n&apos;a pas déclaré son paiement. Après cette étape, ou en cas de problème avec une commande, contactez l&apos;équipe GOWINMALL.</p>
+
+        <h2>9. Contact</h2>
         <p>Pour toute question : {CONTACT}</p>
       </article>
     </main>
