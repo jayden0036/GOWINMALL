@@ -131,6 +131,18 @@ export default async function AdminPage() {
         }}
       >
         Voir les statistiques →
+      </a>      <a
+        href="/admin/finances"
+        style={{
+          display: "inline-block",
+          marginBottom: "14px",
+          marginLeft: "18px",
+          color: "#f5a623",
+          fontWeight: 700,
+          textDecoration: "none",
+        }}
+      >
+        Finances →
       </a>
 
       <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
