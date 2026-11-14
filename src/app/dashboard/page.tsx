@@ -129,7 +129,7 @@ export default async function DashboardPage() {
     ["Type de compte", accountLabels[profile?.account_type] ?? "Particulier"],
   ];
 
-  const comingSoon = ["Mes achats", "Mes ventes", "Mes revenus", "Mes retraits"];
+    const comingSoon = ["Missions", "Affiliation", "Opportunités"];
 
   return (
     <main
