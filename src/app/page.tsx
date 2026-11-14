@@ -1,10 +1,17 @@
 const categories = [
-  { icon: "🛍️", name: "Produits physiques", description: "Achetez et vendez des articles" },
-  { icon: "💼", name: "Services", description: "Proposez vos compétences" },
-  { icon: "🎯", name: "Missions", description: "Réalisez des missions rémunérées" },
-  { icon: "📚", name: "Produits digitaux", description: "Découvrez les produits numériques" },
-  { icon: "🤝", name: "Affiliation", description: "Gagnez sur les ventes recommandées" },
-  { icon: "💰", name: "Opportunités", description: "Découvrez de nouvelles possibilités" },
+  { icon: "🛍️", name: "Produits physiques", description: "Achetez et vendez des articles", href: "/catalogue?type=physical" },
+  { icon: "💼", name: "Services", description: "Proposez vos compétences", href: "/catalogue?type=service" },
+  { icon: "🎯", name: "Missions", description: "Réalisez des missions rémunérées", href: "" },
+  { icon: "📚", name: "Produits digitaux", description: "Découvrez les produits numériques", href: "/catalogue?type=digital" },
+  { icon: "🤝", name: "Affiliation", description: "Gagnez sur les ventes recommandées", href: "" },
+  { icon: "💰", name: "Opportunités", description: "Découvrez de nouvelles possibilités", href: "" },
+];
+
+const steps = [
+  { title: "Créez votre compte", text: "Inscription gratuite avec Google ou par e-mail." },
+  { title: "Parcourez le catalogue", text: "Produits digitaux, produits physiques et services de vendeurs vérifiés." },
+  { title: "Payez GOWINMALL", text: "Votre paiement est vérifié par l'équipe avant la livraison." },
+  { title: "Recevez votre achat", text: "Accès immédiat pour le digital. Pour le reste, vous confirmez la réception, puis le vendeur est payé." },
 ];
 
 export default function Home() {
@@ -18,8 +25,8 @@ export default function Home() {
 
           <nav className="nav-links">
             <a href="#accueil">Accueil</a>
-            <a href="#categories">Catégories</a>
-            <a href="#about">À propos</a>
+            <a href="/catalogue">Catalogue</a>
+            <a href="/comment-ca-marche">Comment ça marche</a>
           </nav>
 
           <div className="nav-actions">
@@ -40,21 +47,21 @@ export default function Home() {
 
             <p>
               Une seule plateforme pour découvrir des produits,
-              proposer vos services, réaliser des missions et
-              développer vos activités partout en Afrique.
+              proposer vos services et développer vos activités
+              partout en Afrique.
             </p>
 
             <div className="hero-actions">
               <a href="/register" className="register hero-button">
                 Rejoindre GOWINMALL →
               </a>
-              <a href="#categories" className="secondary-button">
-                Découvrir la plateforme
+              <a href="/catalogue" className="secondary-button">
+                Voir le catalogue
               </a>
             </div>
 
             <div className="hero-note">
-              ✓ Inscription gratuite · ✓ Plusieurs opportunités · ✓ Accessible en Afrique
+              ✓ Inscription gratuite · ✓ Vendeurs vérifiés · ✓ Frais affichés clairement
             </div>
           </div>
 
@@ -69,7 +76,7 @@ export default function Home() {
             <h2>Une Afrique. Des milliers d'opportunités.</h2>
 
             <p>
-              Commerce, services, missions et produits numériques :
+              Produits, services et opportunités :
               tout commence ici.
             </p>
 
@@ -89,14 +96,86 @@ export default function Home() {
         </div>
 
         <div className="category-grid">
-          {categories.map((category) => (
-            <article className="category-card" key={category.name}>
-              <div className="category-icon">{category.icon}</div>
-              <h3>{category.name}</h3>
-              <p>{category.description}</p>
-              <span className="category-arrow">Bientôt disponible</span>
-            </article>
+          {categories.map((category) => {
+            const content = (
+              <>
+                <div className="category-icon">{category.icon}</div>
+                <h3>{category.name}</h3>
+                <p>{category.description}</p>
+                <span className="category-arrow">
+                  {category.href ? "Explorer →" : "Bientôt disponible"}
+                </span>
+              </>
+            );
+            return category.href ? (
+              <a
+                className="category-card"
+                key={category.name}
+                href={category.href}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {content}
+              </a>
+            ) : (
+              <article className="category-card" key={category.name}>
+                {content}
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="container" id="how" style={{ padding: "56px 20px" }}>
+        <div className="section-heading">
+          <span className="badge">COMMENT ÇA MARCHE</span>
+          <h2>Simple, clair et transparent.</h2>
+          <p>Vous payez GOWINMALL, qui reverse le vendeur après confirmation.</p>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          {steps.map((step, index) => (
+            <div
+              key={step.title}
+              style={{
+                background: "white",
+                border: "1px solid #e5ebe7",
+                borderRadius: "16px",
+                padding: "20px",
+              }}
+            >
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "#e8f5ed",
+                  color: "#087443",
+                  fontWeight: 800,
+                  textAlign: "center",
+                  lineHeight: "32px",
+                  marginBottom: "10px",
+                }}
+              >
+                {index + 1}
+              </div>
+              <strong>{step.title}</strong>
+              <p style={{ fontSize: "14px", lineHeight: 1.6, margin: "6px 0 0", color: "#68766e" }}>
+                {step.text}
+              </p>
+            </div>
           ))}
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: "24px" }}>
+          <a href="/comment-ca-marche" className="secondary-button">
+            Voir les frais et le détail →
+          </a>
         </div>
       </section>
 
@@ -118,13 +197,15 @@ export default function Home() {
             GOWIN<span>MALL</span>
           </a>
           <p>
-  © 2026 GOWINMALL. Tous droits réservés. ·{" "}
-  <a href="/conditions" style={{ color: "inherit" }}>Conditions</a> ·{" "}
-  <a href="/confidentialite" style={{ color: "inherit" }}>Confidentialité</a>
-</p>
+            © 2026 GOWINMALL. Tous droits réservés. ·{" "}
+            <a href="/catalogue" style={{ color: "inherit" }}>Catalogue</a> ·{" "}
+            <a href="/comment-ca-marche" style={{ color: "inherit" }}>Comment ça marche</a> ·{" "}
+            <a href="/conditions" style={{ color: "inherit" }}>Conditions</a> ·{" "}
+            <a href="/confidentialite" style={{ color: "inherit" }}>Confidentialité</a>
+          </p>
           <span>Made for Africa 🌍</span>
         </div>
       </footer>
     </main>
   );
-      }
+            }
