@@ -298,7 +298,36 @@ export default async function DashboardPage() {
             ))}
           </div>
         </section>
-
+        <section style={card}>
+          <h3 style={{ margin: "0 0 12px", color: "#172d22" }}>Mes activités</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+            {[
+              ["🛍️ Catalogue", "/catalogue"],
+              ["📦 Mes commandes", "/commandes"],
+              ["💼 Vendre", "/vendre"],
+              ["ℹ️ Comment ça marche", "/comment-ca-marche"],
+            ].map(([label, href]) => (
+              <a
+                key={href}
+                href={href}
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "14px 10px",
+                  borderRadius: "12px",
+                  background: "#e8f5ed",
+                  color: "#087443",
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  textDecoration: "none",
+                }}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </section>
+        
         <form action={signOut} style={{ textAlign: "center", marginTop: "8px" }}>
           <button
             type="submit"
