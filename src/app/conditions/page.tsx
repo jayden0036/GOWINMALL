@@ -8,7 +8,7 @@ export default function ConditionsPage() {
       <article style={{ maxWidth: "720px", margin: "auto", background: "white", padding: "30px 22px", borderRadius: "18px", lineHeight: 1.7, color: "#26352d" }}>
         <a href="/" style={{ color: "#087443", fontWeight: 700, textDecoration: "none" }}>← GOWINMALL</a>
         <h1 style={{ color: "#087443" }}>Conditions d&apos;utilisation</h1>
-        <p style={{ color: "#68766e", fontSize: "14px" }}>Dernière mise à jour : 8 novembre 2026</p>
+        <p style={{ color: "#68766e", fontSize: "14px" }}Dernière mise à jour : 14 novembre 2026</p>
 
         <h2>1. Objet</h2>
         <p>GOWINMALL est une plateforme en développement destinée à connecter des personnes, des entreprises et des entrepreneurs. Certaines fonctionnalités (achat, vente, services, missions, affiliation) ne sont pas encore disponibles. L&apos;utiliser implique d&apos;accepter les présentes conditions.</p>
