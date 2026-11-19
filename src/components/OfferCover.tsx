@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { coverUrl } from "@/lib/cover";
 
 const gradients = [
@@ -40,11 +41,13 @@ export default function OfferCover({
   if (image) {
     return (
       <div style={{ aspectRatio: aspect, background: "#eef2ef", overflow: "hidden" }}>
-        <img
+        <Image
           src={image}
           alt={title}
-          loading="lazy"
+          fill
+          sizes="(max-width: 600px) 50vw, (max-width: 1024px) 33vw, 25vw"
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          priority={false}
         />
       </div>
     );

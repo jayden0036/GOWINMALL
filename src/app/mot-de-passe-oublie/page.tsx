@@ -28,7 +28,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", fontFamily: "var(--font-dm-sans)" }}>
       <div style={{ width: "100%", maxWidth: "430px", background: "white", padding: "32px 24px", borderRadius: "18px", boxShadow: "0 8px 35px #0000000d", boxSizing: "border-box" }}>
         <h1 style={{ color: "#087443", textAlign: "center" }}>GOWINMALL</h1>
         <h2 style={{ textAlign: "center", color: "#172d22" }}>Mot de passe oublié</h2>

@@ -137,7 +137,7 @@ export default function VerificationPage() {
         minHeight: "100vh",
         background: "#f5f8f5",
         padding: "30px 15px",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "var(--font-dm-sans)",
         boxSizing: "border-box",
       }}
     >

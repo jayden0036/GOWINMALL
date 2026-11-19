@@ -61,7 +61,7 @@ export default async function OfferPage({ params }: { params: Promise<{ id: stri
   const list = benefits[offer.offer_type] ?? benefits.digital;
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
       <div style={{ maxWidth: "980px", margin: "auto", padding: "20px 15px 40px" }}>
         <div style={{ fontSize: "13px", color: "#68766e", marginBottom: "12px" }}>

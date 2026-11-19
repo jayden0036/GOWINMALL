@@ -1,0 +1,83 @@
+# GOWINMALL — Configuration Supabase CLI
+# Pour développer en local avec `supabase start`
+
+project_id = "gowinmall"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "auth", "storage"]
+extra_search_path = ["public", "extensions"]
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://localhost:54321"
+
+[inbucket]
+enabled = true
+port = 54324
+smtp_port = 54325
+pop_port = 54326
+
+[storage]
+enabled = true
+port = 54327
+file_size_limit = "50MiB"
+
+# Buckets créés automatiquement au démarrage
+[[storage.buckets]]
+id = "offer-covers"
+name = "offer-covers"
+public = true
+file_size_limit = "5MiB"
+allowed_mime_types = ["image/jpeg", "image/png", "image/webp"]
+
+[[storage.buckets]]
+id = "identity-documents"
+name = "identity-documents"
+public = false
+file_size_limit = "10MiB"
+allowed_mime_types = ["image/jpeg", "image/png", "application/pdf"]
+
+[auth]
+enabled = true
+port = 54328
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/**"]
+jwt_expiry = 3600
+enable_signup = true
+enable_anonymous_sign_ins = false
+
+# Fournisseurs OAuth
+[auth.external]
+[auth.external.google]
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+redirect_uri = "http://localhost:54321/auth/v1/callback"
+
+[auth.external.github]
+enabled = false
+# client_id = "env(GITHUB_CLIENT_ID)"
+# secret = "env(GITHUB_CLIENT_SECRET)"
+
+# RLS
+[auth.policies]
+enabled = true
+
+# Seed data (optionnel)
+[seed]
+enabled = true
+file = "supabase/seed.sql"
+
+[logs]
+level = "info"
+
+[edge_runtime]
+enabled = false

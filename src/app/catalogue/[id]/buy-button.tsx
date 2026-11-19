@@ -46,7 +46,7 @@ export default function BuyButton({
             onChange={(e) => setNote(e.target.value)}
             maxLength={500}
             rows={2}
-            style={{ display: "block", width: "100%", padding: "12px", marginTop: "6px", border: "1px solid #dce4df", borderRadius: "10px", fontSize: "14px", boxSizing: "border-box", fontFamily: "Arial, sans-serif" }}
+            style={{ display: "block", width: "100%", padding: "12px", marginTop: "6px", border: "1px solid #dce4df", borderRadius: "10px", fontSize: "14px", boxSizing: "border-box", fontFamily: "var(--font-dm-sans)" }}
           />
         </label>
       )}

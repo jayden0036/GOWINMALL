@@ -67,7 +67,7 @@ useEffect(() => {
         alignItems: "center",
         justifyContent: "center",
         padding: "20px",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "var(--font-dm-sans)",
       }}
     >
       <div

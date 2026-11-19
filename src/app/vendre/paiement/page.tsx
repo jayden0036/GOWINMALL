@@ -73,7 +73,7 @@ export default function PayoutPage() {
   }
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", padding: "30px 15px", fontFamily: "Arial, sans-serif", boxSizing: "border-box" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", padding: "30px 15px", fontFamily: "var(--font-dm-sans)", boxSizing: "border-box" }}>
       <div style={{ maxWidth: "520px", margin: "auto", background: "white", padding: "26px 20px", borderRadius: "18px", boxShadow: "0 8px 35px #0000000d" }}>
         <a href="/vendre" style={{ color: "#087443", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
           ← Mes offres

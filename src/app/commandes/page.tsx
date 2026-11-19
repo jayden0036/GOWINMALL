@@ -69,7 +69,7 @@ export default async function OrdersPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
       <div style={{ maxWidth: "620px", margin: "auto", padding: "24px 15px" }}>
         <h1 style={{ color: "#087443", margin: "0 0 18px" }}>Mes commandes</h1>

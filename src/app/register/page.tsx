@@ -110,7 +110,7 @@ export default function RegisterPage() {
         minHeight: "100vh",
         background: "#f5f8f5",
         padding: "35px 15px",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "var(--font-dm-sans)",
       }}
     >
       <div

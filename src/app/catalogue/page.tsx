@@ -41,7 +41,7 @@ export default async function CataloguePage({
   const now = Date.now();
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
 
       <section style={{ background: "linear-gradient(135deg, #0f3d2e, #087443)", color: "white", padding: "28px 15px" }}>

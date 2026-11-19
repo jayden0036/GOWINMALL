@@ -51,7 +51,7 @@ const meta: React.CSSProperties = {
 
 function Shell({ children }: { children: ReactNode }) {
   return (
-    <main style={{ minHeight: "100vh", background: "#101b17", padding: "18px 14px", fontFamily: "Arial, sans-serif", boxSizing: "border-box" }}>
+    <main style={{ minHeight: "100vh", background: "#101b17", padding: "18px 14px", fontFamily: "var(--font-dm-sans)", boxSizing: "border-box" }}>
       <div style={{ maxWidth: "900px", margin: "auto" }}>{children}</div>
     </main>
   );

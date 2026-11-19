@@ -37,3 +37,9 @@ Thumbs.db
 # Editors
 .vscode/
 .idea/
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# Next.js auto-generated types
+next-env.d.ts

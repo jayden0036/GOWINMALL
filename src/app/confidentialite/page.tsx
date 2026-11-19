@@ -4,7 +4,7 @@ const CONTACT = "jaykn46@gmail.com";
 
 export default function ConfidentialitePage() {
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", padding: "35px 15px", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", padding: "35px 15px", fontFamily: "var(--font-dm-sans)" }}>
       <article style={{ maxWidth: "720px", margin: "auto", background: "white", padding: "30px 22px", borderRadius: "18px", lineHeight: 1.7, color: "#26352d" }}>
         <a href="/" style={{ color: "#087443", fontWeight: 700, textDecoration: "none" }}>← GOWINMALL</a>
         <h1 style={{ color: "#087443" }}>Politique de confidentialité</h1>

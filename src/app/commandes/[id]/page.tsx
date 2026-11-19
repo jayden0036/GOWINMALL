@@ -60,7 +60,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const isDigital = order.offer_type === "digital";
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
       <div style={{ maxWidth: "620px", margin: "auto", padding: "24px 15px" }}>
         <a href="/commandes" style={{ color: "#087443", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>

@@ -50,7 +50,7 @@ export default async function HowItWorksPage() {
   const example = 10000; // 100 $ exprimé en cents
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
       <div style={{ maxWidth: "720px", margin: "auto", padding: "24px 15px" }}>
         <h1 style={{ color: "#087443", margin: "0 0 6px" }}>Comment ça marche</h1>

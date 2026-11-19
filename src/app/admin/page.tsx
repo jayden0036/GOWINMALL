@@ -30,7 +30,7 @@ function Shell({ children }: { children: ReactNode }) {
         minHeight: "100vh",
         background: "#101b17",
         padding: "24px 16px",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "var(--font-dm-sans)",
         boxSizing: "border-box",
       }}
     >
