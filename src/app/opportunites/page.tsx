@@ -19,6 +19,8 @@ const categoryLabels: Record<string, string> = {
 };
 
 const sourceLabels: Record<string, string> = {
+  jobicy: "Jobicy",
+  arbeitnow: "Arbeitnow",
   reliefweb: "ReliefWeb",
 };
 
