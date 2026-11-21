@@ -88,7 +88,7 @@ export default async function OpportunitesPage({
     <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
 
-      <section style={{ background: "linear-gradient(135deg, #0f3d2e, #087443)", color: "white", padding: "28px 15px" }}>
+      <section style={{ background: "linear-gradient(135deg, #073b30, #126b52)", color: "white", padding: "28px 15px" }}>
         <div style={{ maxWidth: "980px", margin: "auto" }}>
           <h1 style={{ margin: "0 0 6px", fontSize: "26px" }}>Opportunités</h1>
           <p style={{ margin: "0 0 16px", opacity: 0.9, fontSize: "14px", lineHeight: 1.5 }}>
@@ -121,7 +121,7 @@ export default async function OpportunitesPage({
           <strong style={{ color: "#172d22", fontSize: "16px" }}>Gagne ton premier revenu en ligne</strong>
           <p style={{ margin: "6px 0 12px", fontSize: "14px", lineHeight: 1.5, color: "#26352d" }}>
             Postuler prend du temps. Tu peux aussi vendre ton savoir-faire : un guide, une formation ou un service. GOWINMALL encaisse l&apos;achat, puis te reverse ta part.{" "}
-            <a href="/comment-ca-marche" style={{ color: "#087443", fontWeight: 700 }}>Voir les frais</a>
+            <a href="/comment-ca-marche" style={{ color: "#126b52", fontWeight: 700 }}>Voir les frais</a>
           </p>
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <a
@@ -133,7 +133,7 @@ export default async function OpportunitesPage({
             {(publishedOffers ?? 0) > 0 && (
               <a
                 href="/catalogue"
-                style={{ padding: "10px 16px", borderRadius: "8px", background: "#e8f5ed", color: "#087443", fontWeight: 700, fontSize: "14px", textDecoration: "none" }}
+                style={{ padding: "10px 16px", borderRadius: "8px", background: "#e0f0e8", color: "#126b52", fontWeight: 700, fontSize: "14px", textDecoration: "none" }}
               >
                 Voir le catalogue
               </a>
@@ -157,7 +157,7 @@ export default async function OpportunitesPage({
                   fontSize: "13px",
                   fontWeight: 600,
                   textDecoration: "none",
-                  background: active === value ? "#087443" : "white",
+                  background: active === value ? "#126b52" : "white",
                   color: active === value ? "white" : "#26352d",
                   border: "1px solid #dce4df",
                 }}
@@ -179,7 +179,7 @@ export default async function OpportunitesPage({
                 : "Nous branchons des sources officielles, une par une, pour n'afficher que des offres fiables."}
             </p>
             {(search || active) && (
-              <a href="/opportunites" style={{ color: "#087443", fontWeight: 700 }}>Tout afficher</a>
+              <a href="/opportunites" style={{ color: "#126b52", fontWeight: 700 }}>Tout afficher</a>
             )}
           </div>
         ) : (
@@ -194,7 +194,7 @@ export default async function OpportunitesPage({
                   style={{ background: "white", borderRadius: "14px", padding: "16px", border: "1px solid #edf1ee", boxShadow: "0 4px 18px #0000000f" }}
                 >
                   <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "8px" }}>
-                    <span style={{ background: "#e8f5ed", color: "#087443", fontSize: "11px", fontWeight: 700, padding: "3px 9px", borderRadius: "999px" }}>
+                    <span style={{ background: "#e0f0e8", color: "#126b52", fontSize: "11px", fontWeight: 700, padding: "3px 9px", borderRadius: "999px" }}>
                       {categoryLabels[o.category] ?? "Opportunité"}
                     </span>
                     {o.is_remote && (
@@ -236,7 +236,7 @@ export default async function OpportunitesPage({
                       href={o.url}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
-                      style={{ padding: "9px 14px", borderRadius: "8px", background: "#087443", color: "white", fontWeight: 700, fontSize: "13px", textDecoration: "none" }}
+                      style={{ padding: "9px 14px", borderRadius: "8px", background: "#126b52", color: "white", fontWeight: 700, fontSize: "13px", textDecoration: "none" }}
                     >
                       Voir l&apos;offre
                     </a>
@@ -249,5 +249,5 @@ export default async function OpportunitesPage({
       </div>
     </main>
   );
-    }
-          
+              }
+            
