@@ -1,6 +1,6 @@
 import { payoutMethodLabels } from "@/lib/format";
 import { saveProfile, signOut } from "./actions";
-import { Badge, BORDER, card, formatDate, ghostButton, GREEN, GREEN_SOFT, h2, MUTED, primaryButton, Shell, sub, TEXT } from "./ui";
+import { Badge, card, formatDate, ghostButton, GREEN, GREEN_SOFT, h2, MUTED, primaryButton, Shell, sub, TEXT } from "./ui";
 
 const docLabels: Record<string, string> = {
   carte_electeur: "Carte d'électeur",
