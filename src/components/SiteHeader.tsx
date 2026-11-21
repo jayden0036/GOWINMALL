@@ -32,6 +32,7 @@ export default async function SiteHeader() {
         </a>
         <nav style={{ display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap" }}>
           <a href="/catalogue" style={link}>Catalogue</a>
+          <a href="/opportunites" style={link}>Opportunités</a>
           <a href="/vendre" style={link}>Vendre</a>
           {user ? (
             <>
