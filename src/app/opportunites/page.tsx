@@ -79,6 +79,11 @@ export default async function OpportunitesPage({
   const items = ((data ?? []) as Opportunity[]).filter((o) => /^https?:\/\//.test(o.url));
   const now = Date.now();
 
+  const { count: publishedOffers } = await supabase
+    .from("offers")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "published");
+
   return (
     <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
@@ -110,6 +115,30 @@ export default async function OpportunitesPage({
       <div style={{ maxWidth: "980px", margin: "auto", padding: "18px 15px 40px" }}>
         <div style={{ background: "#fff8e8", border: "1px solid #f3dfae", color: "#6b4e00", padding: "12px 14px", borderRadius: "12px", fontSize: "13px", lineHeight: 1.5, marginBottom: "16px" }}>
           <strong>Prudence :</strong> un recruteur sérieux ne demande jamais d&apos;argent pour une candidature, un dossier ou une formation. Ne payez rien et ne donnez jamais vos codes ou pièces d&apos;identité par message.
+        </div>
+
+        <div style={{ background: "white", border: "1px solid #dce4df", borderRadius: "14px", padding: "16px", marginBottom: "16px" }}>
+          <strong style={{ color: "#172d22", fontSize: "16px" }}>Gagne ton premier revenu en ligne</strong>
+          <p style={{ margin: "6px 0 12px", fontSize: "14px", lineHeight: 1.5, color: "#26352d" }}>
+            Postuler prend du temps. Tu peux aussi vendre ton savoir-faire : un guide, une formation ou un service. GOWINMALL encaisse l&apos;achat, puis te reverse ta part.{" "}
+            <a href="/comment-ca-marche" style={{ color: "#087443", fontWeight: 700 }}>Voir les frais</a>
+          </p>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <a
+              href="/vendre"
+              style={{ padding: "10px 16px", borderRadius: "8px", background: "#f5a623", color: "white", fontWeight: 800, fontSize: "14px", textDecoration: "none" }}
+            >
+              Vendre sur GOWINMALL
+            </a>
+            {(publishedOffers ?? 0) > 0 && (
+              <a
+                href="/catalogue"
+                style={{ padding: "10px 16px", borderRadius: "8px", background: "#e8f5ed", color: "#087443", fontWeight: 700, fontSize: "14px", textDecoration: "none" }}
+              >
+                Voir le catalogue
+              </a>
+            )}
+          </div>
         </div>
 
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "16px" }}>
@@ -220,4 +249,5 @@ export default async function OpportunitesPage({
       </div>
     </main>
   );
-}
+    }
+          
