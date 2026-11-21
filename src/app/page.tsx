@@ -4,7 +4,7 @@ const categories = [
   { icon: "🎯", name: "Missions", description: "Réalisez des missions rémunérées", href: "" },
   { icon: "📚", name: "Produits digitaux", description: "Découvrez les produits numériques", href: "/catalogue?type=digital" },
   { icon: "🤝", name: "Affiliation", description: "Gagnez sur les ventes recommandées", href: "" },
-  { icon: "💰", name: "Opportunités", description: "Découvrez de nouvelles possibilités", href: "" },
+  { icon: "💰", name: "Opportunités", description: "Découvrez de nouvelles possibilités", href: "/opportunites" },
 ];
 
 const steps = [
