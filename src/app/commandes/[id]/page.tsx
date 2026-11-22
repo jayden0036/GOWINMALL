@@ -4,6 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import { formatPrice, formatRate, offerTypeLabels } from "@/lib/format";
 import { orderCode, orderStatusLabels, payoutStatusLabels } from "@/lib/order-labels";
 import OrderActions from "./order-actions";
+import DownloadButton from "./download-button";
 
 export const dynamic = "force-dynamic";
 
@@ -57,14 +58,21 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
     delivery = data?.delivery_info ?? "";
   }
 
+  let file: { has_file: boolean; file_name: string; used: number; max: number } | null = null;
+  if (isBuyer && (order.status === "paid" || order.status === "completed")) {
+    const { data } = await supabase.rpc("download_status", { p_order_id: order.id });
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row?.has_file) file = row;
+  }
+
   const isDigital = order.offer_type === "digital";
 
   return (
     <main style={{ minHeight: "100vh", background: "#f5f8f5", fontFamily: "var(--font-dm-sans)" }}>
       <SiteHeader />
       <div style={{ maxWidth: "620px", margin: "auto", padding: "24px 15px" }}>
-        <a href="/commandes" style={{ color: "#087443", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
-          ← Mes commandes
+        <a href="/commandes" style={{ color: "#126b52", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
+          Mes commandes
         </a>
 
         <div style={{ ...card, marginTop: "12px" }}>
@@ -75,7 +83,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           <div style={{ fontSize: "13px", color: "#68766e" }}>
             {offerTypeLabels[order.offer_type] ?? "Offre"}
           </div>
-          <div style={{ display: "inline-block", marginTop: "12px", padding: "6px 12px", borderRadius: "999px", background: "#e8f5ed", color: "#087443", fontSize: "13px", fontWeight: 700 }}>
+          <div style={{ display: "inline-block", marginTop: "12px", padding: "6px 12px", borderRadius: "999px", background: "#e0f0e8", color: "#126b52", fontSize: "13px", fontWeight: 700 }}>
             {orderStatusLabels[order.status] ?? order.status}
           </div>
         </div>
@@ -133,11 +141,19 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
                 <h2 style={{ margin: "0 0 8px", fontSize: "17px", color: "#172d22" }}>
                   {isDigital ? "Votre achat" : "Livraison"}
                 </h2>
+                {file && (
+                  <div style={{ marginBottom: delivery ? "14px" : 0 }}>
+                    <div style={{ fontSize: "14px", marginBottom: "10px", color: "#26352d" }}>
+                      Fichier : <strong>{file.file_name}</strong>
+                    </div>
+                    <DownloadButton orderId={order.id} used={file.used} max={file.max} />
+                  </div>
+                )}
                 {delivery ? (
                   <div style={{ background: "#edf7f0", padding: "12px", borderRadius: "10px", fontSize: "14px", lineHeight: 1.6, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                     {delivery}
                   </div>
-                ) : (
+                ) : file ? null : (
                   <p style={{ fontSize: "14px", color: "#68766e", margin: 0 }}>
                     Le vendeur vous contactera pour la livraison.
                   </p>
@@ -166,7 +182,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             </div>
             <div style={row}>
               <span>Vous recevrez</span>
-              <strong style={{ color: "#087443" }}>{formatPrice(order.seller_amount ?? 0, order.currency)}</strong>
+              <strong style={{ color: "#126b52" }}>{formatPrice(order.seller_amount ?? 0, order.currency)}</strong>
             </div>
             <div style={row}>
               <span>Reversement</span>
@@ -191,4 +207,5 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
       </div>
     </main>
   );
-      }
+}
+        
