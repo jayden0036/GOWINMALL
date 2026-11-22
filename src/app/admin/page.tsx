@@ -217,6 +217,7 @@ export default async function AdminPage() {
       <nav style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }} aria-label="Administration">
         <Tab href="/admin" label="Vue d'ensemble" active />
         <Tab href="/admin/finances" label="Finances" />
+        {role === "owner" && <Tab href="/admin/finances/retraits" label="Retraits" />}
         <Tab href="/admin/statistiques" label="Statistiques" />
         <Tab href="/" label="Retour au site" />
       </nav>
