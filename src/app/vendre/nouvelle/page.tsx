@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { commissionOf, formatPrice, formatRate, parsePrice } from "@/lib/format";
+import OfferCover from "@/components/OfferCover";
+import { commissionOf, formatPrice, formatRate, offerTypeLabels, parsePrice } from "@/lib/format";
 
 const field: React.CSSProperties = {
   display: "block",
@@ -25,6 +26,19 @@ const label: React.CSSProperties = {
   fontSize: "14px",
 };
 
+const MAX_PRODUCT_BYTES = 50 * 1024 * 1024;
+
+const productTypes: Record<string, string> = {
+  pdf: "application/pdf",
+  epub: "application/epub+zip",
+  zip: "application/zip",
+};
+
+function extensionOf(name: string): string {
+  const dot = name.lastIndexOf(".");
+  return dot === -1 ? "" : name.slice(dot + 1).toLowerCase();
+}
+
 export default function NewOfferPage() {
   const router = useRouter();
   const [type, setType] = useState("digital");
@@ -33,6 +47,9 @@ export default function NewOfferPage() {
   const [price, setPrice] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [deliveryInfo, setDeliveryInfo] = useState("");
+  const [cover, setCover] = useState<File | null>(null);
+  const [productFile, setProductFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [publish, setPublish] = useState(true);
   const [acceptedFees, setAcceptedFees] = useState(false);
   const [fees, setFees] = useState<Record<string, number>>({});
@@ -56,6 +73,48 @@ export default function NewOfferPage() {
   const amount = parsePrice(price, currency);
   const commission = amount !== null && rate !== undefined ? commissionOf(amount, rate) : null;
 
+  function onCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setMessage("");
+    if (!file) {
+      setCover(null);
+      setCoverPreview(null);
+      return;
+    }
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setMessage("L'image doit être au format JPG, PNG ou WebP.");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      setMessage("L'image est trop lourde (3 Mo maximum).");
+      e.target.value = "";
+      return;
+    }
+    setCover(file);
+    setCoverPreview(URL.createObjectURL(file));
+  }
+
+  function onProductFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setMessage("");
+    if (!file) {
+      setProductFile(null);
+      return;
+    }
+    if (!productTypes[extensionOf(file.name)]) {
+      setMessage("Le fichier doit être un PDF, un ePub ou un ZIP.");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > MAX_PRODUCT_BYTES) {
+      setMessage("Le fichier est trop lourd (50 Mo maximum).");
+      e.target.value = "";
+      return;
+    }
+    setProductFile(file);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage("");
@@ -76,8 +135,8 @@ export default function NewOfferPage() {
       setMessage("La description doit contenir au moins 10 caractères.");
       return;
     }
-    if (type === "digital" && deliveryInfo.trim().length < 5) {
-      setMessage("Indiquez ce que l'acheteur reçoit après paiement (par exemple un lien de téléchargement).");
+    if (type === "digital" && !productFile && deliveryInfo.trim().length < 5) {
+      setMessage("Envoyez votre fichier, ou indiquez ce que l'acheteur reçoit après paiement (code d'accès, lien…).");
       return;
     }
     if (!acceptedFees) {
@@ -95,6 +154,46 @@ export default function NewOfferPage() {
       return;
     }
 
+    let coverPath: string | null = null;
+    if (cover) {
+      const ext = cover.type === "image/png" ? "png" : cover.type === "image/webp" ? "webp" : "jpg";
+      const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("offer-covers")
+        .upload(path, cover, { contentType: cover.type, upsert: false });
+      if (uploadError) {
+        setLoading(false);
+        setMessage("L'image n'a pas pu être envoyée : " + uploadError.message);
+        return;
+      }
+      coverPath = path;
+    }
+
+    let productPath: string | null = null;
+    if (type === "digital" && productFile) {
+      const ext = extensionOf(productFile.name);
+      const safeName = productFile.name
+        .replace(/\.[^.]+$/, "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9_-]+/g, "-")
+        .slice(0, 60);
+      const path = `${user.id}/${crypto.randomUUID()}-${safeName || "produit"}.${ext}`;
+      const { error: fileError } = await supabase.storage
+        .from("digital-products")
+        .upload(path, productFile, { contentType: productTypes[ext], upsert: false });
+      if (fileError) {
+        setLoading(false);
+        setMessage(
+          /row-level security|policy|not allowed|unauthorized/i.test(fileError.message)
+            ? "L'envoi de fichiers est réservé aux vendeurs dont l'identité est vérifiée. Faites vérifier votre identité, puis réessayez."
+            : "Le fichier n'a pas pu être envoyé : " + fileError.message
+        );
+        return;
+      }
+      productPath = path;
+    }
+
     const { data: offer, error } = await supabase
       .from("offers")
       .insert({
@@ -104,12 +203,14 @@ export default function NewOfferPage() {
         description: description.trim(),
         price_amount: amount,
         currency,
+        cover_path: coverPath,
         status: "draft",
       })
       .select("id")
       .single();
 
     if (error || !offer) {
+      if (productPath) await supabase.storage.from("digital-products").remove([productPath]);
       setLoading(false);
       setMessage("Impossible d'enregistrer l'offre : " + (error?.message ?? "erreur inconnue"));
       return;
@@ -117,7 +218,13 @@ export default function NewOfferPage() {
 
     const { error: deliveryError } = await supabase
       .from("offer_delivery")
-      .insert({ offer_id: offer.id, delivery_info: deliveryInfo.trim() });
+      .insert({
+        offer_id: offer.id,
+        delivery_info: deliveryInfo.trim(),
+        file_path: productPath,
+        file_name: productFile ? productFile.name.slice(0, 200) : null,
+        max_downloads: 3,
+      });
 
     if (deliveryError) {
       setLoading(false);
@@ -146,10 +253,10 @@ export default function NewOfferPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#f5f8f5", padding: "30px 15px", fontFamily: "var(--font-dm-sans)", boxSizing: "border-box" }}>
       <div style={{ maxWidth: "560px", margin: "auto", background: "white", padding: "26px 20px", borderRadius: "18px", boxShadow: "0 8px 35px #0000000d" }}>
-        <a href="/vendre" style={{ color: "#087443", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
-          ← Mes offres
+        <a href="/vendre" style={{ color: "#126b52", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
+          Mes offres
         </a>
-        <h1 style={{ color: "#087443", margin: "12px 0 18px" }}>Nouvelle offre</h1>
+        <h1 style={{ color: "#126b52", margin: "12px 0 18px" }}>Nouvelle offre</h1>
 
         <form onSubmit={handleSubmit}>
           <label style={label}>
@@ -165,6 +272,33 @@ export default function NewOfferPage() {
             Titre
             <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} style={field} placeholder="Ex. : Guide complet du SEO" required />
           </label>
+
+          <label style={label}>
+            Image de couverture (facultatif)
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={onCoverChange} style={{ ...field, padding: "10px" }} />
+            <span style={{ display: "block", fontSize: "12px", color: "#68766e", marginTop: "6px", fontWeight: 400 }}>
+              JPG, PNG ou WebP, 3 Mo maximum. Format conseillé : horizontal (4/3). Sans image, une affiche colorée
+              est créée automatiquement avec votre titre.
+            </span>
+          </label>
+
+          <div style={{ marginBottom: "18px" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "#26352d", marginBottom: "8px" }}>
+              Aperçu dans le catalogue
+            </div>
+            <div style={{ width: "190px", borderRadius: "14px", overflow: "hidden", border: "1px solid #edf1ee", boxShadow: "0 4px 18px #0000000f" }}>
+              <OfferCover id="apercu" title={title.trim() || "Titre de votre offre"} type={type} src={coverPreview} />
+              <div style={{ padding: "10px" }}>
+                <div style={{ fontSize: "11px", color: "#68766e" }}>{offerTypeLabels[type]}</div>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: "#172d22", lineHeight: 1.3 }}>
+                  {title.trim() || "Titre de votre offre"}
+                </div>
+                <div style={{ fontSize: "17px", fontWeight: 800, color: "#126b52", marginTop: "4px" }}>
+                  {amount !== null ? formatPrice(amount, currency) : "Prix"}
+                </div>
+              </div>
+            </div>
+          </div>
 
           <label style={label}>
             Description
@@ -197,7 +331,7 @@ export default function NewOfferPage() {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid #cfe5d6", marginTop: "4px", paddingTop: "4px" }}>
                 <span>Vous recevrez</span>
-                <strong style={{ color: "#087443" }}>{formatPrice(amount - commission, currency)}</strong>
+                <strong style={{ color: "#126b52" }}>{formatPrice(amount - commission, currency)}</strong>
               </div>
               <div style={{ fontSize: "12px", color: "#68766e", marginTop: "6px" }}>
                 Les frais éventuels de l&apos;opérateur Mobile Money ne sont pas inclus.
@@ -205,9 +339,20 @@ export default function NewOfferPage() {
             </div>
           )}
 
+          {type === "digital" && (
+            <label style={label}>
+              Fichier à vendre (PDF, ePub ou ZIP)
+              <input type="file" accept=".pdf,.epub,.zip" onChange={onProductFileChange} style={{ ...field, padding: "10px" }} />
+              <span style={{ display: "block", fontSize: "12px", color: "#68766e", marginTop: "6px", fontWeight: 400, lineHeight: 1.5 }}>
+                50 Mo maximum. Votre fichier est stocké en privé : l&apos;acheteur ne peut le télécharger que 3 fois,
+                et seulement après la confirmation de son paiement.
+              </span>
+            </label>
+          )}
+
           <label style={label}>
-            {type === "digital" ? "Ce que l'acheteur reçoit après paiement" : "Informations de livraison (facultatif)"}
-            <textarea value={deliveryInfo} onChange={(e) => setDeliveryInfo(e.target.value)} maxLength={2000} rows={3} style={field} placeholder={type === "digital" ? "Ex. : lien de téléchargement, code d'accès…" : "Ex. : remise en main propre à Kinshasa, livraison sous 48 h…"} />
+            {type === "digital" ? "Informations pour l'acheteur (facultatif si vous envoyez un fichier)" : "Informations de livraison (facultatif)"}
+            <textarea value={deliveryInfo} onChange={(e) => setDeliveryInfo(e.target.value)} maxLength={2000} rows={3} style={field} placeholder={type === "digital" ? "Ex. : code d'accès, instructions de lecture…" : "Ex. : remise en main propre à Kinshasa, livraison sous 48 h…"} />
           </label>
 
           <label style={{ display: "flex", gap: "10px", fontSize: "14px", marginBottom: "12px" }}>
@@ -229,11 +374,12 @@ export default function NewOfferPage() {
             </p>
           )}
 
-          <button type="submit" disabled={loading} style={{ width: "100%", padding: "16px", background: "#087443", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", fontSize: "16px", opacity: loading ? 0.7 : 1 }}>
+          <button type="submit" disabled={loading} style={{ width: "100%", padding: "16px", background: "#126b52", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", fontSize: "16px", opacity: loading ? 0.7 : 1 }}>
             {loading ? "Enregistrement…" : "Enregistrer l'offre"}
           </button>
         </form>
       </div>
     </main>
   );
-        }
+                                         }
+        
