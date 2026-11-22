@@ -19,6 +19,8 @@ type Order = {
   currency: string;
   status: string;
   payout_status: string;
+  payout_reference: string | null;
+  payout_paid_at: string | null;
   created_at: string;
 };
 
@@ -46,7 +48,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       .order("created_at", { ascending: false }),
     supabase
       .from("orders")
-      .select("id, buyer_id, seller_id, offer_title, unit_amount, seller_amount, currency, status, payout_status, created_at")
+      .select("id, buyer_id, seller_id, offer_title, unit_amount, seller_amount, currency, status, payout_status, payout_reference, payout_paid_at, created_at")
       .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`)
       .order("created_at", { ascending: false })
       .limit(200),
@@ -103,6 +105,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const toReceive = sales.filter((o) => o.payout_status === "due");
   const alreadyPaid = sales.filter((o) => o.payout_status === "paid");
   const publishedOffers = offers.filter((o) => o.status === "published").length;
+  const payoutHistory = alreadyPaid
+    .slice()
+    .sort((a, b) => new Date(b.payout_paid_at ?? b.created_at).getTime() - new Date(a.payout_paid_at ?? a.created_at).getTime())
+    .slice(0, 20);
 
   const tasks: { title: string; text: string; href?: string; cta?: string }[] = [];
   if (!emailConfirmed) {
@@ -200,6 +206,37 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               value={sumByCurrency(alreadyPaid.map((o) => ({ currency: o.currency, amount: Number(o.seller_amount ?? 0) })))}
             />
           </div>
+          <section style={{ ...card, marginTop: "12px" }}>
+            <h2 style={{ ...h2, marginBottom: "6px" }}>Historique des reversements</h2>
+            {payoutHistory.length === 0 ? (
+              <p style={{ ...sub, margin: 0 }}>Aucun reversement reçu pour le moment.</p>
+            ) : (
+              payoutHistory.map((o, i) => (
+                <div
+                  key={o.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: "12px",
+                    padding: "12px 0",
+                    borderTop: i === 0 ? "none" : `1px solid ${BORDER}`,
+                    fontSize: "14px",
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, color: TEXT }}>{o.offer_title}</div>
+                    <div style={{ color: MUTED, fontSize: "12px" }}>
+                      {orderCode(o.id)} · reversé le {formatDate(o.payout_paid_at ?? o.created_at)}
+                      {o.payout_reference ? ` · réf. ${o.payout_reference}` : ""}
+                    </div>
+                  </div>
+                  <div style={{ fontWeight: 700, color: GREEN, flexShrink: 0 }}>
+                    {formatPrice(Number(o.seller_amount ?? 0), o.currency)}
+                  </div>
+                </div>
+              ))
+            )}
+          </section>
         </>
       )}
 
@@ -256,4 +293,4 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     </Shell>
   );
                                   }
-    
+          
