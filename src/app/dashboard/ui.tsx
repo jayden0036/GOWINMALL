@@ -1,12 +1,9 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import { formatPrice } from "@/lib/format";
+import { BORDER, card, ghostButton, GREEN, GREEN_SOFT, h2, MUTED, primaryButton, sub, TEXT } from "./styles";
 
-export const GREEN = "#126b52";
-export const GREEN_SOFT = "#e0f0e8";
-export const TEXT = "#172b25";
-export const MUTED = "#718078";
-export const BORDER = "#e5ebe7";
+export { BORDER, card, ghostButton, GREEN, GREEN_SOFT, h2, MUTED, primaryButton, sub, TEXT };
 
 const css = `
 .acct { max-width: 1100px; margin: 0 auto; padding: 22px 16px 96px; display: grid; grid-template-columns: 230px 1fr; gap: 24px; align-items: start; }
@@ -23,50 +20,11 @@ const css = `
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
 @media (max-width: 850px) {
   .acct { grid-template-columns: 1fr; }
-  .acct-side { position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; top: auto; border-radius: 0; border: none; border-top: 1px solid ${BORDER}; padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0; }
+  .acct-side { position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; top: auto; border-radius: 0; border: none; border-top: 1px solid ${BORDER}; padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); grid-auto-flow: column; grid-auto-columns: minmax(74px, 1fr); gap: 0; overflow-x: auto; }
   .acct-link { flex-direction: column; gap: 3px; padding: 6px 2px; font-size: 10.5px; text-align: center; }
   .grid2 { grid-template-columns: 1fr; }
 }
 `;
-
-export const card: CSSProperties = {
-  background: "white",
-  border: `1px solid ${BORDER}`,
-  borderRadius: "16px",
-  padding: "20px",
-  marginBottom: "16px",
-};
-
-export const h2: CSSProperties = { margin: "0 0 4px", fontSize: "17px", color: TEXT };
-export const sub: CSSProperties = { margin: "0 0 14px", fontSize: "13px", color: MUTED, lineHeight: 1.5 };
-
-export const primaryButton: CSSProperties = {
-  display: "inline-block",
-  padding: "11px 18px",
-  background: GREEN,
-  color: "white",
-  borderRadius: "10px",
-  fontWeight: 700,
-  fontSize: "14px",
-  textDecoration: "none",
-  border: "none",
-  cursor: "pointer",
-  fontFamily: "inherit",
-};
-
-export const ghostButton: CSSProperties = {
-  display: "inline-block",
-  padding: "10px 16px",
-  background: "white",
-  color: "#26352d",
-  border: "1px solid #d5ded9",
-  borderRadius: "10px",
-  fontWeight: 600,
-  fontSize: "14px",
-  textDecoration: "none",
-  cursor: "pointer",
-  fontFamily: "inherit",
-};
 
 function NavIcon({ children }: { children: ReactNode }) {
   return (
@@ -131,6 +89,41 @@ const navItems: { key: string; label: string; href: string; icon: ReactNode }[] 
       <NavIcon>
         <path d="M3 17l6-6 4 4 8-8" />
         <path d="M15 7h6v6" />
+      </NavIcon>
+    ),
+  },
+  {
+    key: "missions",
+    label: "Missions",
+    href: "/missions",
+    icon: (
+      <NavIcon>
+        <rect x="3" y="7" width="18" height="13" rx="2" />
+        <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+      </NavIcon>
+    ),
+  },
+  {
+    key: "portefeuille",
+    label: "Portefeuille",
+    href: "/portefeuille",
+    icon: (
+      <NavIcon>
+        <path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z" />
+        <path d="M4 7l11-3v3M16 14h2" />
+      </NavIcon>
+    ),
+  },
+  {
+    key: "affiliation",
+    label: "Affiliation",
+    href: "/affiliation",
+    icon: (
+      <NavIcon>
+        <circle cx="9" cy="8" r="3" />
+        <path d="M3 20c0-3 3-5 6-5s6 2 6 5" />
+        <circle cx="17" cy="9" r="2.5" />
+        <path d="M16 14.5c3 0 5 1.5 5 4.5" />
       </NavIcon>
     ),
   },

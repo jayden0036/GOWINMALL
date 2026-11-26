@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { dmSans } from "@/lib/fonts";
+import ReferralCapture from "@/components/ReferralCapture";
 
 export const metadata: Metadata = {
   title: "GOWINMALL | Achetez, vendez et gagnez",
@@ -21,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={dmSans.variable}>
-      <body>{children}</body>
+      <body>
+        <ReferralCapture />
+        {children}
+      </body>
     </html>
   );
 }

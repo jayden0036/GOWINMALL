@@ -45,5 +45,9 @@ export const config = {
     "/dashboard/:path*",
     "/vendre/:path*",
     "/commandes/:path*",
+    "/missions/:path*",
+    "/portefeuille/:path*",
+    "/notifications/:path*",
+    "/affiliation/:path*",
   ],
 };
