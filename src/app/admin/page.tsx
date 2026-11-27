@@ -33,6 +33,8 @@ type OrderLine = {
   seller_amount: number | null;
 };
 
+type RewardLine = { amount: number; currency: string; status: string };
+
 const roleLabels: Record<string, string> = {
   owner: "Propriétaire",
   admin: "Administrateur",
@@ -151,9 +153,10 @@ export default async function AdminPage() {
 
   let recent: Row[] = [];
   let orders: OrderLine[] = [];
+  let rewards: RewardLine[] = [];
 
   if (canViewUsers) {
-    const [recentRes, ordersRes] = await Promise.all([
+    const [recentRes, ordersRes, rewardsRes] = await Promise.all([
       supabase
         .from("profiles")
         .select("id, first_name, last_name, post_name, phone, city, account_type, created_at")
@@ -164,9 +167,11 @@ export default async function AdminPage() {
         .select("status, payout_status, currency, unit_amount, commission_amount, seller_amount")
         .order("created_at", { ascending: false })
         .limit(500),
+      supabase.from("affiliate_rewards").select("amount, currency, status").neq("status", "cancelled").limit(1000),
     ]);
     recent = (recentRes.data ?? []) as Row[];
     orders = (ordersRes.data ?? []) as OrderLine[];
+    rewards = (rewardsRes.data ?? []) as RewardLine[];
 
     await supabase.rpc("log_admin_action", {
       p_action: "consultation_liste_utilisateurs",
@@ -176,7 +181,13 @@ export default async function AdminPage() {
   const declared = orders.filter((o) => o.status === "payment_declared").length;
   const dueCount = orders.filter((o) => o.payout_status === "due").length;
   const confirmed = orders.filter((o) => o.status === "paid" || o.status === "completed");
-  const commission = sumLines(confirmed.map((o) => ({ currency: o.currency, amount: Number(o.commission_amount ?? 0) })));
+  // Commission nette : ce que GOWINMALL garde après les récompenses d'affiliation
+  const commission = sumLines([
+    ...confirmed.map((o) => ({ currency: o.currency, amount: Number(o.commission_amount ?? 0) })),
+    ...rewards.map((r) => ({ currency: r.currency, amount: -Number(r.amount) })),
+  ]);
+  const dueRewards = rewards.filter((r) => r.status === "due");
+  const affiliateDue = sumLines(dueRewards.map((r) => ({ currency: r.currency, amount: Number(r.amount) })));
   const toPayOut = sumLines(
     orders.filter((o) => o.payout_status === "due").map((o) => ({ currency: o.currency, amount: Number(o.seller_amount ?? 0) }))
   );
@@ -187,6 +198,7 @@ export default async function AdminPage() {
   if (canViewUsers) {
     todo.push({ label: "Paiements déclarés à confirmer", count: declared, href: "/admin/finances" });
     todo.push({ label: "Reversements à effectuer", count: dueCount, href: "/admin/finances" });
+    todo.push({ label: "Récompenses d'affiliation à verser", count: dueRewards.length, href: "/admin/affiliation" });
   }
   const openTasks = todo.filter((t) => t.count > 0);
 
@@ -220,6 +232,8 @@ export default async function AdminPage() {
         {role === "owner" && <Tab href="/admin/finances/retraits" label="Retraits" />}
         <Tab href="/admin/statistiques" label="Statistiques" />
         {role === "owner" && <Tab href="/admin/badges" label="Badges" />}
+        {role === "owner" && <Tab href="/admin/affiliation" label="Affiliation" />}
+        {role === "owner" && <Tab href="/admin/annonces" label="Annonces" />}
         <Tab href="/" label="Retour au site" />
       </nav>
 
@@ -270,8 +284,9 @@ export default async function AdminPage() {
         <Kpi label="Nouveaux (7 jours)" value={canViewUsers ? newUsersRes.count ?? 0 : "—"} />
         <Kpi label="Offres publiées" value={publishedOffers} />
         <Kpi label="Documents en attente" value={pendingDocs} color={AMBER} />
-        {canViewUsers && <Kpi label="Commissions gagnées" value={commission} />}
+        {canViewUsers && <Kpi label="Commissions nettes" value={commission} />}
         {canViewUsers && <Kpi label="À reverser aux vendeurs" value={toPayOut} color={AMBER} />}
+        {canViewUsers && <Kpi label="Affiliation à verser" value={affiliateDue} color={AMBER} />}
       </div>
 
       <div id="identite" style={{ scrollMarginTop: "16px" }}>
