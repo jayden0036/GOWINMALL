@@ -1,88 +1,74 @@
 import Image from "next/image";
 import { coverUrl } from "@/lib/cover";
 
-const gradients = [
-  "linear-gradient(135deg, #087443, #0b9b5a)",
-  "linear-gradient(135deg, #0f3d2e, #1e7a55)",
-  "linear-gradient(135deg, #8a4b08, #f5a623)",
-  "linear-gradient(135deg, #1b3a5c, #2d7fb8)",
-  "linear-gradient(135deg, #4a2c6e, #8e5bd0)",
+const palettes = [
+  { bg: "#0f3d2e", fg: "#ffffff" },
+  { bg: "#0b1f17", fg: "#ffffff" },
+  { bg: "#f5a623", fg: "#0b1f17" },
+  { bg: "#087443", fg: "#ffffff" },
 ];
-
-const icons: Record<string, string> = {
-  digital: "📚",
-  physical: "🛍️",
-  service: "💼",
-};
 
 function pick(id: string): number {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 997;
-  return h % gradients.length;
+  return h % palettes.length;
 }
 
+// Couverture façon livre (format vertical). Sans image envoyée par le vendeur, une couverture typographique est dessinée.
 export default function OfferCover({
   id,
   title,
-  type,
   coverPath,
   src,
-  aspect = "4 / 3",
+  aspect = "2 / 3",
 }: {
   id: string;
   title: string;
-  type: string;
+  type?: string;
   coverPath?: string | null;
   src?: string | null;
   aspect?: string;
 }) {
   const image = src ?? coverUrl(coverPath);
+  const p = palettes[pick(id)];
+  const frame: React.CSSProperties = {
+    position: "relative",
+    aspectRatio: aspect,
+    borderRadius: "4px 8px 8px 4px",
+    overflow: "hidden",
+    background: p.bg,
+    boxShadow: "0 8px 18px #0b1f1738, inset 5px 0 0 #00000026",
+  };
 
   if (image) {
+    // L'image est toujours affichée en entier (jamais rognée), quel que soit son format.
     return (
-      <div style={{ aspectRatio: aspect, background: "#eef2ef", overflow: "hidden" }}>
-        <Image
-          src={image}
-          alt={title}
-          fill
-          sizes="(max-width: 600px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          priority={false}
-        />
+      <div style={frame}>
+        <Image src={image} alt={title} fill sizes="(max-width: 600px) 50vw, (max-width: 1024px) 33vw, 22vw" style={{ objectFit: "contain" }} />
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        aspectRatio: aspect,
-        background: gradients[pick(id)],
-        color: "white",
-        padding: "14px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        overflow: "hidden",
-      }}
-    >
-      <div style={{ fontSize: "28px" }}>{icons[type] ?? "✨"}</div>
-      <div
-        style={{
-          fontWeight: 800,
-          fontSize: "clamp(14px, 4vw, 20px)",
-          lineHeight: 1.25,
-          display: "-webkit-box",
-          WebkitLineClamp: 3,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-          textShadow: "0 1px 6px #00000040",
-        }}
-      >
-        {title}
+    <div style={{ ...frame, color: p.fg, padding: "14px 12px", boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div>
+        <div style={{ width: "34px", height: "4px", background: "#f5a623", marginBottom: "9px" }} />
+        <div
+          style={{
+            fontWeight: 800,
+            fontSize: "clamp(14px, 4.4vw, 19px)",
+            lineHeight: 1.15,
+            display: "-webkit-box",
+            WebkitLineClamp: 5,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            wordBreak: "break-word",
+          }}
+        >
+          {title}
+        </div>
       </div>
-      <div style={{ fontSize: "11px", opacity: 0.85, letterSpacing: "1px" }}>GOWINMALL</div>
+      <div style={{ fontSize: "9px", letterSpacing: "2px", fontWeight: 700, opacity: 0.85 }}>GOWINMALL</div>
     </div>
   );
 }
