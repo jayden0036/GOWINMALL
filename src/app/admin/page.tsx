@@ -219,6 +219,7 @@ export default async function AdminPage() {
         <Tab href="/admin/finances" label="Finances" />
         {role === "owner" && <Tab href="/admin/finances/retraits" label="Retraits" />}
         <Tab href="/admin/statistiques" label="Statistiques" />
+        {role === "owner" && <Tab href="/admin/badges" label="Badges" />}
         <Tab href="/" label="Retour au site" />
       </nav>
 
