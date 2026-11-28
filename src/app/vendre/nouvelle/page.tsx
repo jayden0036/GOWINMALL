@@ -277,8 +277,8 @@ export default function NewOfferPage() {
             Image de couverture (facultatif)
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={onCoverChange} style={{ ...field, padding: "10px" }} />
             <span style={{ display: "block", fontSize: "12px", color: "#68766e", marginTop: "6px", fontWeight: 400 }}>
-              JPG, PNG ou WebP, 3 Mo maximum. Format conseillé : horizontal (4/3). Sans image, une affiche colorée
-              est créée automatiquement avec votre titre.
+              JPG, PNG ou WebP, 3 Mo maximum. Format conseillé : vertical, comme une couverture de livre (par exemple 800 × 1200 pixels).
+              L'image est toujours affichée en entier. Sans image, une couverture est créée automatiquement avec votre titre.
             </span>
           </label>
 

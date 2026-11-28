@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { dmSans } from "@/lib/fonts";
 import ReferralCapture from "@/components/ReferralCapture";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export const metadata: Metadata = {
   title: "GOWINMALL | Achetez, vendez et gagnez",
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body>
         <ReferralCapture />
         {children}
+        <WhatsAppButton />
       </body>
     </html>
   );
